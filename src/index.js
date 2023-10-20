@@ -15,7 +15,7 @@ app.use(cors());
 
 mongoose
   .connect(
-    process.env.cluster,
+    process.env.CLUSTER,
     {
       useNewUrlParser: true,
     }
