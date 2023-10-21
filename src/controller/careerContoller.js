@@ -1,9 +1,9 @@
 const careersModel = require("../models/careerModel");
 
-
 const moment = require("moment");
 require("moment-timezone");
 const careers = async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     data = req.body;
     moment.tz.setDefault("Asia/Kolkata");
@@ -20,11 +20,12 @@ const careers = async (req, res) => {
 
 //==========================================================================
 const getCareers = async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     let data = await careersModel
       .find({ isDeleted: false })
-      .sort({ createdAt: -1 })
-      
+      .sort({ createdAt: -1 });
+
     res.status(200).send({ status: true, data: data });
     if (!data) {
       return res.status(404).send({ status: false, message: "no data found" });
@@ -44,7 +45,7 @@ const updateCareers = async (req, res) => {
     let updateData = await careersModel.findOneAndUpdate({ _id: Id }, data, {
       new: true,
     });
-    if (!updateData || updateData.isDeleted==true) {
+    if (!updateData || updateData.isDeleted == true) {
       return res.status(404).send({
         status: false,
         message: "no data found ",
@@ -59,20 +60,18 @@ const updateCareers = async (req, res) => {
 };
 
 //======================================================================
-const individualEntry = async (req,res)=>{
+const individualEntry = async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   try {
-    let id = req.params.Id
-    let data = await careersModel
-    .find({ isDeleted: false ,_id:id })
-   
-    
-  res.status(200).send({ status: true, data: data });
-  if (!data) {
-    return res.status(404).send({ status: false, message: "no data found" });
-  }
+    let id = req.params.Id;
+    let data = await careersModel.find({ isDeleted: false, _id: id });
 
+    res.status(200).send({ status: true, data: data });
+    if (!data) {
+      return res.status(404).send({ status: false, message: "no data found" });
+    }
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
-}
-module.exports = { careers, getCareers, updateCareers, individualEntry};
+};
+module.exports = { careers, getCareers, updateCareers, individualEntry };
