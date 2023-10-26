@@ -74,4 +74,7 @@ const individualEntry = async (req, res) => {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
+//=========================================================================
+
+
 module.exports = { careers, getCareers, updateCareers, individualEntry };
