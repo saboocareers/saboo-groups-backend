@@ -16,6 +16,8 @@ const {
   SabooGroupsRange,
 } = require("../controller/contactUsController");
 
+
+const {getAllDataStaisticsPage} = require("../controller/AllDataStatisticsController")
 //====================================================================
 router.get("/test-me", function (req, res) {
   res.send("this is successfully created");
@@ -46,4 +48,8 @@ router.put(
 router.post("/SabooGroupsRange",SabooGroupsRange),
 router.get("/SabooGroupsUniqueEntries", SabooGroupsUniqueEntries)
 router.get("/dupesSabooGroupsContactUs",dupesSabooGroupsContactUs)
+
+//==============================================================
+
+router.get("/getAllDataStaisticsPage",getAllDataStaisticsPage)
 module.exports = router;
