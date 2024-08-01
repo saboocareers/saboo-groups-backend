@@ -12,7 +12,7 @@ let getAllDataStaisticsPage = async function (req, res) {
     };
     let Arenaoption = {
       method: "get",
-      url: "https://arena-backend-git-main-arenas-projects.vercel.app//allData",
+      url: "https://arena-backend-git-main-arenas-projects.vercel.app/allData",
     };
     let autozoneOptions = {
       method: "get",
