@@ -58,12 +58,8 @@ let getAllDataStaisticsPage = async function (req, res) {
       let monthlyData = [];
       for (let i = 0; i <= currentMonth; i++) {
         let monthLabel = `${months[i]}${currentYear}`;
-        let monthData = monthlyData.find((data) => data.Month === monthLabel);
-        if (!monthData) {
-          monthData = { Month: monthLabel };
-          monthlyData.push(monthData);
-        }
-        monthData[label] = monthlyCounts[i];
+        let monthData = { x: monthLabel, y: monthlyCounts[i] };
+        monthlyData.push(monthData);
       }
 
       return monthlyData;
@@ -102,21 +98,30 @@ let getAllDataStaisticsPage = async function (req, res) {
 
     let autozoneMonthlyData = getMonthlyData(autozoneData.data, "Autozone");
     let nexaMonthlyData = getMonthlyData(nexaData.data, "Nexa");
-    let commercialMonthlyData = getMonthlyData(Commercialdata.data, "Commercial");
+    let commercialMonthlyData = getMonthlyData(
+      Commercialdata.data,
+      "Commercial"
+    );
     let arenaMonthlyData = getMonthlyData(ArenaData.data, "Arena");
 
     // Combine the monthly data into a single array
-    let combinedMonthlyData = [];
-    [autozoneMonthlyData, nexaMonthlyData, commercialMonthlyData, arenaMonthlyData].forEach((monthlyData) => {
-      monthlyData.forEach((data) => {
-        let monthData = combinedMonthlyData.find((m) => m.Month === data.Month);
-        if (!monthData) {
-          monthData = { Month: data.Month };
-          combinedMonthlyData.push(monthData);
+    let combinedMonthlyData = {};
+    [
+      { label: "Autozone", data: autozoneMonthlyData },
+      { label: "Nexa", data: nexaMonthlyData },
+      { label: "Commercial", data: commercialMonthlyData },
+      { label: "Arena", data: arenaMonthlyData },
+    ].forEach(({ label, data }) => {
+      data.forEach((item) => {
+        if (!combinedMonthlyData[item.x]) {
+          combinedMonthlyData[item.x] = { Month: item.x };
         }
-        Object.assign(monthData, data);
+        combinedMonthlyData[item.x][label] = item.y;
       });
     });
+
+    // Convert the combinedMonthlyData object into an array
+    let barchart = Object.values(combinedMonthlyData);
 
     let autozoneMonthCounts = getCurrentAndPreviousMonthCounts(
       autozoneData.data
@@ -168,8 +173,8 @@ let getAllDataStaisticsPage = async function (req, res) {
       if (lead.date && lead.time) {
         lead.timestamp = new Date(`${lead.date}T${lead.time}`);
       } //else {
-    //     console.warn("Lead missing date or time:", lead);
-    //   }
+      //     console.warn("Lead missing date or time:", lead);
+      //   }
     });
 
     // Log the combined leads with timestamps
@@ -187,7 +192,7 @@ let getAllDataStaisticsPage = async function (req, res) {
         LeadsCount: AllDataCount,
         monthlyCounts: monthlyCounts,
         recentLeads: recentLeads,
-        barchart: combinedMonthlyData,
+        barchart: barchart,
       },
     });
   } catch (err) {
